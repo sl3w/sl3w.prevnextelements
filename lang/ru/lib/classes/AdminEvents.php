@@ -1,0 +1,6 @@
+<?php
+
+$MESS['SL3W_PREVNEXTBUTTONS_PREV'] = '«';
+$MESS['SL3W_PREVNEXTBUTTONS_PREV_TITLE'] = '« Предыдущий элемент';
+$MESS['SL3W_PREVNEXTBUTTONS_NEXT'] = '»';
+$MESS['SL3W_PREVNEXTBUTTONS_NEXT_TITLE'] = 'Следующий элемент »';
