@@ -10,29 +10,33 @@ class AdminEvents
 {
     public static function IBlocksPrevNextButtonsHandler(&$items)
     {
+        if ($_SERVER['REQUEST_METHOD'] != 'GET' || Helpers::Application()->GetCurPage() != '/bitrix/admin/iblock_element_edit.php') return;
+
         $currentId = Helpers::Request()->get('ID');
         $currentIblockId = Helpers::Request()->get('IBLOCK_ID');
+
+        if (!$currentId || !$currentIblockId) return;
 
         $showButtonsIbs = Settings::getIBlocksShowButtons();
         $showButtons = in_array('all', $showButtonsIbs) || in_array($currentIblockId, $showButtonsIbs);
 
+        if (!$showButtons) return;
+
         $prevNextEls = Helpers::getPrevNextElementInIb($currentIblockId, $currentId);
 
-        if ($_SERVER['REQUEST_METHOD'] == 'GET' && Helpers::Application()->GetCurPage() == '/bitrix/admin/iblock_element_edit.php'
-            && $showButtons && $currentId > 0) {
+        if (!is_array($prevNextEls)) return;
 
-            $items[] = [
-                'TEXT' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_PREV'),
-                'LINK' => ($prev = $prevNextEls['PREV']) ? self::prepareLink($currentIblockId, $prev['ID'], $prev['IBLOCK_SECTION_ID']) : 'javascript:void(0);',
-                'TITLE' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_PREV_TITLE'),
-            ];
+        $items[] = [
+            'TEXT' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_PREV'),
+            'LINK' => ($prev = $prevNextEls['PREV']) ? self::prepareLink($currentIblockId, $prev['ID'], $prev['IBLOCK_SECTION_ID']) : 'javascript:void(0);',
+            'TITLE' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_PREV_TITLE'),
+        ];
 
-            $items[] = [
-                'TEXT' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_NEXT'),
-                'LINK' => ($next = $prevNextEls['NEXT']) ? self::prepareLink($currentIblockId, $next['ID'], $next['IBLOCK_SECTION_ID']) : 'javascript:void(0);',
-                'TITLE' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_NEXT_TITLE'),
-            ];
-        }
+        $items[] = [
+            'TEXT' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_NEXT'),
+            'LINK' => ($next = $prevNextEls['NEXT']) ? self::prepareLink($currentIblockId, $next['ID'], $next['IBLOCK_SECTION_ID']) : 'javascript:void(0);',
+            'TITLE' => Loc::getMessage('SL3W_PREVNEXTBUTTONS_NEXT_TITLE'),
+        ];
     }
 
     private static function prepareLink($iblockId, $elId, $sectionId)
